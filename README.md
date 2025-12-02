@@ -6,6 +6,7 @@ A minimal WordPress plugin to display Flamingo messages in the admin panel.
 - Adds a custom admin menu: **Flamingo CRUD**
 - Fetches latest 50 Flamingo messages via REST API
 - Displays messages in a simple table
+- Allows deleting messages directly from the admin panel
 
 ## Installation
 1. Upload the `flamingo-crud-plugin` folder to `wp-content/plugins/`
@@ -15,3 +16,9 @@ A minimal WordPress plugin to display Flamingo messages in the admin panel.
 ## Requirements
 - WordPress 5.x+
 - Flamingo plugin installed
+
+## Tech Stack
+- WordPress Plugin
+- REST API
+- Vanilla JS
+- PHP / MySQL

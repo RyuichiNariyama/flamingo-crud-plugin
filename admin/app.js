@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const app = document.getElementById("flamingo-crud-app");
   app.innerHTML = "<h2>Loading…</h2>";
 
-  try {
+  async function loadMessages() {
     const res = await fetch("/wp-json/flamingo-crud/v1/messages");
     const data = await res.json();
 
@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <th>Name</th>
             <th>Email</th>
             <th>Created</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -32,13 +33,22 @@ document.addEventListener("DOMContentLoaded", async () => {
               <td>${m.from_name}</td>
               <td>${m.from_email}</td>
               <td>${m.created_at}</td>
+              <td><button data-id="${m.id}">Delete</button></td>
             </tr>`
           ).join("")}
         </tbody>
       </table>
     `;
-  } catch (err) {
-    console.error(err);
-    app.innerHTML = "<p>Error loading messages.</p>";
+
+    document.querySelectorAll("button[data-id]").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.dataset.id;
+        if (!confirm(`Delete message ID ${id}?`)) return;
+        await fetch(`/wp-json/flamingo-crud/v1/messages/${id}`, { method: 'DELETE' });
+        loadMessages(); // 再読み込み
+      });
+    });
   }
+
+  loadMessages();
 });

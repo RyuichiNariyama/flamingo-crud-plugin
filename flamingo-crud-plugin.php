@@ -42,11 +42,20 @@ class FlamingoCrudPlugin {
     // REST API
     public function register_api() {
         register_rest_route('flamingo-crud/v1', '/messages', [
-            'methods' => 'GET',
-            'callback' => [$this, 'get_messages'],
-            'permission_callback' => function() {
-                return current_user_can('manage_options');
-            }
+        'methods' => 'GET',
+        'callback' => [$this, 'get_messages'],
+        'permission_callback' => function() {
+            return current_user_can('manage_options');
+        }
+        ]);
+        
+        // DELETE
+        register_rest_route('flamingo-crud/v1', '/messages/(?P<id>\d+)', [
+        'methods' => 'DELETE',
+        'callback' => [$this, 'delete_message'],
+        'permission_callback' => function() {
+            return current_user_can('manage_options');
+        }
         ]);
     }
 
@@ -58,6 +67,15 @@ class FlamingoCrudPlugin {
         $results = $wpdb->get_results("SELECT id, subject, from_name, from_email, created_at FROM $table ORDER BY created_at DESC LIMIT 50");
 
         return $results;
+    }
+    
+    // 削除用コールバック
+    public function delete_message($request) {
+        global $wpdb;
+        $id = intval($request['id']);
+        $table = $wpdb->prefix . 'flamingo_inbound';
+        $wpdb->delete($table, ['id' => $id]);
+        return ['success' => true, 'deleted_id' => $id];
     }
 }
 
